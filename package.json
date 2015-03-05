@@ -1,0 +1,16 @@
+{
+  "name": "slack-cart",
+  "version": "0.0.0",
+  "dependencies": {
+    "dotenv": "*",
+    "express": "*",
+    "body-parser": "*",
+    "pusher": "*",
+    "pusher-url": "*"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}
