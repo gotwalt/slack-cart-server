@@ -20,6 +20,6 @@ app.post('/incoming', urlencodedParser, function (req, res) {
   res.send("Sent to cart");
 });
 
-app.listen(3000, "0.0.0.0", function() {
+app.listen(process.env.PORT, "0.0.0.0", function() {
   console.log('Listening on port 3000...')
 })
