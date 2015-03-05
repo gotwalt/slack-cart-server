@@ -6,12 +6,18 @@ require('dotenv').load();
 
 var pusher = require('pusher-url').connect();
 
-var urlencodedParser = require('body-parser').urlencoded({ extended: true })
+var urlencodedParser = require('body-parser').urlencoded({ extended: false })
+
+// Provide a default request content type
+app.use(function(req, res, next) {
+  req.headers['content-type'] = req.headers['content-type'] || 'application/x-www-form-urlencoded';
+  next();
+});
 
 app.post('/incoming', urlencodedParser, function (req, res) {
-  console.log(req);
   res.setHeader('Content-Type', 'text/plain')
-  res.send(req.body.text);
+  pusher.trigger('cart', 'url', {username: req.body.user_name, uri: req.body.text })
+  res.send("Sent to cart");
 });
 
 app.listen(3000, "0.0.0.0", function() {
