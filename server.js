@@ -17,7 +17,7 @@ app.use(function(req, res, next) {
 app.post('/incoming', urlencodedParser, function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
   pusher.trigger('cart', 'show', {username: req.body.user_name, uri: req.body.text })
-  res.send("Sent to cart");
+  res.send("Sent " + req.body.text + " to cart");
 });
 
 app.listen(process.env.PORT, "0.0.0.0", function() {
