@@ -1,6 +1,7 @@
 var express = require('express')
   , app = express()
-  , slack_token = process.env.SLACK_TOKEN;
+  , slack_token = process.env.SLACK_TOKEN
+  , url = require('url');
 
 require('dotenv').load();
 
@@ -14,10 +15,25 @@ app.use(function(req, res, next) {
   next();
 });
 
+function normalize(s) {
+  var uri = url.parse(s);
+  if (uri.protocol == null) {
+    uri = url.parse('http://' + s)
+  }
+  if (uri.protocol != 'http:' && uri.protocol != 'https:') { return null }
+  return uri.protocol + '//' + uri.host + uri.path;
+}
+
 app.post('/incoming', urlencodedParser, function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
-  pusher.trigger('cart', 'show', {username: req.body.user_name, uri: req.body.text })
-  res.send("Sent " + req.body.text + " to cart");
+  var uri = normalize(req.body.text);
+  if (uri) {
+    pusher.trigger('cart', 'show', {username: req.body.user_name, uri: uri });
+    res.send("Sent " + uri + " to cart");
+  } else {
+    res.send(req.body.text + " is not a valid URL")
+  }
+
 });
 
 app.listen(process.env.PORT, "0.0.0.0", function() {
