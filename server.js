@@ -1,6 +1,5 @@
 var express = require('express')
   , app = express()
-  , slack_token = process.env.SLACK_TOKEN
   , url = require('url');
 
 require('dotenv').load();
@@ -16,6 +15,7 @@ app.use(function(req, res, next) {
 });
 
 function normalize(s) {
+  if (s == null || s.length == 0) { return null }
   var uri = url.parse(s);
   if (uri.protocol == null) {
     uri = url.parse('http://' + s)
@@ -26,6 +26,12 @@ function normalize(s) {
 
 app.post('/incoming', urlencodedParser, function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
+  if (req.body.token != process.env.SLACK_TOKEN) {
+    res.status(401);
+    res.send('Bad token');
+    return;
+  }
+
   var uri = normalize(req.body.text);
   if (uri) {
     pusher.trigger('cart', 'show', {username: req.body.user_name, uri: uri });
