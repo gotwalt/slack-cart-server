@@ -16,7 +16,7 @@ app.use(function(req, res, next) {
 
 app.post('/incoming', urlencodedParser, function (req, res) {
   res.setHeader('Content-Type', 'text/plain')
-  pusher.trigger('cart', 'url', {username: req.body.user_name, uri: req.body.text })
+  pusher.trigger('cart', 'show', {username: req.body.user_name, uri: req.body.text })
   res.send("Sent to cart");
 });
 
